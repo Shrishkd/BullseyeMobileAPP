@@ -44,3 +44,6 @@ example
 
 # local env (EXPO_PUBLIC_* only; still keep out of git)
 .env
+
+#documents
+/docs
