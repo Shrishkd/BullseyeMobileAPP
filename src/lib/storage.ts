@@ -9,6 +9,7 @@ import { Platform } from 'react-native';
 export const StorageKeys = {
   token: 'bullseye_token',
   themePreference: 'bullseye_theme',
+  watchlist: 'bullseye_watchlist',
 } as const;
 
 const isWeb = Platform.OS === 'web';

@@ -8,6 +8,7 @@ import { AppState, Platform } from 'react-native';
 import { queryClient } from '@/api/queryClient';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingsStore } from '@/stores/settings';
+import { useWatchlistStore } from '@/stores/watchlist';
 import { palette } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
@@ -18,7 +19,11 @@ export default function RootLayout() {
   const { scheme } = useTheme();
 
   useEffect(() => {
-    void Promise.all([useSettingsStore.getState().hydrate(), useAuthStore.getState().hydrate()]);
+    void Promise.all([
+      useSettingsStore.getState().hydrate(),
+      useAuthStore.getState().hydrate(),
+      useWatchlistStore.getState().hydrate(),
+    ]);
   }, []);
 
   useEffect(() => {

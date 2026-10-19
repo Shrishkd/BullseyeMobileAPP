@@ -45,6 +45,15 @@ export function useCandles(symbol: string, resolution: Resolution) {
   });
 }
 
+export function useQuote(symbol: string) {
+  return useQuery({
+    queryKey: queryKeys.quote(symbol),
+    queryFn: () => marketApi.quote(symbol),
+    enabled: symbol.length > 0,
+    refetchInterval: 60_000,
+  });
+}
+
 export function useHoldings() {
   return useQuery({ queryKey: queryKeys.holdings, queryFn: portfolioApi.holdings });
 }

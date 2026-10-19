@@ -1,6 +1,13 @@
-import { formatINR, formatINRCompact, formatNumber, formatPct, normaliseSymbol, timeAgo } from '@/lib/format';
+import { formatINR, formatINRCompact, formatNumber, formatPct, formatVolume, normaliseSymbol, timeAgo } from '@/lib/format';
 
 describe('format', () => {
+  it('formats volume with Indian units', () => {
+    expect(formatVolume(950)).toBe('950');
+    expect(formatVolume(125000)).toBe('1.25L');
+    expect(formatVolume(32_000_000)).toBe('3.20Cr');
+    expect(formatVolume(4500)).toBe('4.5k');
+    expect(formatVolume(null)).toBe('—');
+  });
   it('uses Indian digit grouping', () => {
     expect(formatNumber(1234567.891)).toBe('12,34,567.89');
     expect(formatNumber(999)).toBe('999.00');

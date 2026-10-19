@@ -4,7 +4,7 @@ import Svg, { Line, Polyline, Rect, Text as SvgText } from 'react-native-svg';
 
 import type { Candle } from '@/api/types';
 import { Text } from '@/components/ui';
-import { formatNumber } from '@/lib/format';
+import { formatNumber, formatVolume } from '@/lib/format';
 import { spacing } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
@@ -84,6 +84,11 @@ export const CandleChart = memo(function CandleChart({
             O {formatNumber(active.open)} H {formatNumber(active.high)} L {formatNumber(active.low)} C{' '}
             {formatNumber(active.close)}
           </Text>
+          {active.volume != null ? (
+            <Text variant="caption" tone="muted" numeric>
+              Vol {formatVolume(active.volume)}
+            </Text>
+          ) : null}
           {active.rsi != null ? (
             <Text variant="caption" tone="muted" numeric>
               RSI {active.rsi.toFixed(1)}

@@ -1,9 +1,10 @@
+import * as Haptics from 'expo-haptics';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { BellPlus, Brain, Plus, Swords, Wand2 } from 'lucide-react-native';
+import { BellPlus, Brain, Plus, Star, Swords, Wand2 } from 'lucide-react-native';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { useCandles, useExplainIndicators } from '@/api/queries';
+import { useCandles, useExplainIndicators, useQuote } from '@/api/queries';
 import type { Resolution } from '@/api/types';
 import { CandleChart } from '@/components/charts/CandleChart';
 import { LiveBadge } from '@/components/LiveBadge';
@@ -24,6 +25,7 @@ import {
 import { RESOLUTIONS } from '@/config/market';
 import { useLivePrice } from '@/hooks/useLivePrice';
 import { formatINR, formatNumber, formatPct, normaliseSymbol, trendOf } from '@/lib/format';
+import { useWatchlistStore } from '@/stores/watchlist';
 import { spacing } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
@@ -32,6 +34,10 @@ export default function StockScreen() {
   const params = useLocalSearchParams<{ symbol: string }>();
   const symbol = normaliseSymbol(params.symbol ?? '');
   const [resolution, setResolution] = useState<Resolution>('D');
+
+  const isWatched = useWatchlistStore((s) => s.symbols.includes(symbol));
+  const toggleWatchlist = useWatchlistStore((s) => s.toggle);
+  const quote = useQuote(symbol);
 
   const live = useLivePrice(symbol);
   const candles = useCandles(symbol, resolution);
@@ -57,7 +63,28 @@ export default function StockScreen() {
 
   return (
     <Screen refreshing={candles.isRefetching} onRefresh={candles.refetch}>
-      <Stack.Screen options={{ title: symbol }} />
+      <Stack.Screen
+        options={{
+          title: symbol,
+          headerRight: () => (
+            <Pressable
+              onPress={() => {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                toggleWatchlist(symbol);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={isWatched ? `Remove ${symbol} from watchlist` : `Add ${symbol} to watchlist`}
+              hitSlop={12}
+              style={{ padding: spacing.xs }}>
+              <Star
+                color={isWatched ? colors.warning : colors.textMuted}
+                fill={isWatched ? colors.warning : 'none'}
+                size={22}
+              />
+            </Pressable>
+          ),
+        }}
+      />
 
       <View style={styles.priceBlock}>
         <Text variant="display" numeric accessibilityLabel={`${symbol} price ${formatINR(price)}`}>
@@ -69,7 +96,7 @@ export default function StockScreen() {
               {formatPct(change)} today
             </Text>
           ) : null}
-          <LiveBadge status={live.status} />
+          <LiveBadge status={live.status} marketOpen={quote.data?.market_open} />
         </View>
       </View>
 

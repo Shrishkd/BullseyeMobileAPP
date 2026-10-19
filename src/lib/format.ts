@@ -38,6 +38,17 @@ export function formatINRCompact(value: number | null | undefined): string {
   return formatINR(value, abs >= 1000 ? 0 : 2);
 }
 
+/** Indian volume notation: 950 → 950, 125000 → 1.25L, 32000000 → 3.20Cr. */
+export function formatVolume(value: number | null | undefined): string {
+  if (!isNum(value)) return DASH;
+  const abs = Math.abs(value);
+  const sign = value < 0 ? '-' : '';
+  if (abs >= 1e7) return `${sign}${(abs / 1e7).toFixed(2)}Cr`;
+  if (abs >= 1e5) return `${sign}${(abs / 1e5).toFixed(2)}L`;
+  if (abs >= 1e3) return `${sign}${(abs / 1e3).toFixed(1)}k`;
+  return `${sign}${abs}`;
+}
+
 /** Signed percentage: +1.25% / -0.40%. */
 export function formatPct(value: number | null | undefined, decimals = 2): string {
   if (!isNum(value)) return DASH;
