@@ -12,6 +12,7 @@ import {
   useUpdateAlert,
 } from '@/api/queries';
 import type { Alert, AlertType } from '@/api/types';
+import { sendLocalNotification } from '@/lib/notifications';
 import {
   Badge,
   Button,
@@ -55,11 +56,17 @@ export default function AlertsScreen() {
 
   const runCheck = () =>
     check.mutate(undefined, {
-      onSuccess: (r) =>
+      onSuccess: (r) => {
+        if (r.triggered > 0) {
+          for (const item of r.results) {
+            void sendLocalNotification(`Bullseye Alert: ${item.symbol}`, item.message);
+          }
+        }
         RNAlert.alert(
           r.triggered > 0 ? `${r.triggered} alert${r.triggered > 1 ? 's' : ''} triggered` : 'No alerts triggered',
           r.results.map((x) => `• ${x.message}`).join('\n') || `Checked ${r.checked} active alerts.`,
-        ),
+        );
+      },
       onError: (e) => RNAlert.alert('Check failed', errorText(e)),
     });
 

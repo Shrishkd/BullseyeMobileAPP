@@ -10,6 +10,8 @@ export const StorageKeys = {
   token: 'bullseye_token',
   themePreference: 'bullseye_theme',
   watchlist: 'bullseye_watchlist',
+  biometrics: 'bullseye_biometrics',
+  notifications: 'bullseye_notifications',
 } as const;
 
 const isWeb = Platform.OS === 'web';

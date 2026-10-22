@@ -9,6 +9,7 @@ import { queryClient } from '@/api/queryClient';
 import { useAuthStore } from '@/stores/auth';
 import { useSettingsStore } from '@/stores/settings';
 import { useWatchlistStore } from '@/stores/watchlist';
+import { promptBiometricAuth } from '@/lib/biometrics';
 import { palette } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
@@ -34,7 +35,16 @@ export default function RootLayout() {
   useEffect(() => {
     const sub = AppState.addEventListener('change', (state) => {
       if (Platform.OS !== 'web') focusManager.setFocused(state === 'active');
-      if (state === 'active') useAuthStore.getState().checkExpiry();
+      if (state === 'active') {
+        useAuthStore.getState().checkExpiry();
+        if (useSettingsStore.getState().biometricsEnabled && useAuthStore.getState().status === 'signedIn') {
+          void promptBiometricAuth().then((success) => {
+            if (!success) {
+              void useAuthStore.getState().logout();
+            }
+          });
+        }
+      }
     });
     return () => sub.remove();
   }, []);
