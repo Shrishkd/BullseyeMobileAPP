@@ -11,8 +11,8 @@ import { spacing } from '@/theme/tokens';
 export default function LoginScreen() {
   const login = useAuthStore((s) => s.login);
   const notice = useAuthStore((s) => s.notice);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>(DEMO_CREDENTIALS.email);
+  const [password, setPassword] = useState<string>(DEMO_CREDENTIALS.password);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<'form' | 'demo' | null>(null);
 
@@ -39,6 +39,9 @@ export default function LoginScreen() {
           {notice}
         </Text>
       ) : null}
+      <Text variant="small" tone="muted">
+        Demo credentials: Email: {DEMO_CREDENTIALS.email} | Password: {DEMO_CREDENTIALS.password}
+      </Text>
       <Input
         label="Email"
         value={email}
