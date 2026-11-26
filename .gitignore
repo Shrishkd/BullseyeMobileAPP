@@ -44,6 +44,13 @@ example
 
 # local env (EXPO_PUBLIC_* only; still keep out of git)
 .env
+backend-lite/.env
+
+# Python virtual environments & cache
+.venv/
+venv/
+__pycache__/
+*.py[cod]
 
 #documents
 /docs
