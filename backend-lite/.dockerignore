@@ -1,0 +1,14 @@
+﻿venv/
+.venv/
+venv_broken_old/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.git/
+.gitignore
+.vscode/
+bullseye.db
+bullseye.sqbpro
+Backend Start.txt
