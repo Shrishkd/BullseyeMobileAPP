@@ -1,0 +1,42 @@
+# Environments
+*venv*
+.venv/
+venv/
+venv_broken_old/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+
+# Docker
+docker-compose.yml
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Databases & SQLite
+*.db
+*.sqlite
+*.sqlite3
+*.sqbpro
+
+# Machine Learning Models & Artifacts
+*.keras
+*.h5
+*.pkl
+*.joblib
+app/services/ml/trained_models/
+
+# Logs
+*.log
+logs/
+
+# Local notes
+Backend Start.txt
+
+# Do NOT ignore requirements and deployment configs
+!requirements*.txt
+!runtime.txt

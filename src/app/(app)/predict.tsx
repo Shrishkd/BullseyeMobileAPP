@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { usePrediction } from '@/api/queries';
-import type { Direction, ModelType } from '@/api/types';
+import type { Direction } from '@/api/types';
 import { SymbolSearch } from '@/components/SymbolSearch';
 import {
   Button,
@@ -15,23 +15,17 @@ import {
   ProgressBar,
   Screen,
   SectionHeader,
-  Segmented,
   Text,
 } from '@/components/ui';
 import { formatINR, normaliseSymbol, timeAgo } from '@/lib/format';
 import { spacing } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
-const MODELS: { value: ModelType; label: string }[] = [
-  { value: 'xgboost', label: 'XGBoost' },
-  { value: 'lstm', label: 'LSTM' },
-];
-
 export default function PredictScreen() {
   const { colors } = useTheme();
   const params = useLocalSearchParams<{ symbol?: string }>();
   const [symbol, setSymbol] = useState(normaliseSymbol(params.symbol ?? ''));
-  const [model, setModel] = useState<ModelType>('xgboost');
+  const model = 'xgboost' as const;
   const [requested, setRequested] = useState(!!params.symbol);
 
   const prediction = usePrediction(symbol, model, requested);
@@ -63,7 +57,9 @@ export default function PredictScreen() {
           setRequested(true);
         }}
       />
-      <Segmented options={MODELS} value={model} onChange={setModel} />
+      <Text variant="caption" tone="muted">
+        XGBoost model only (cloud lite mode)
+      </Text>
       <Button
         title="Get prediction"
         disabled={!symbol}
@@ -72,7 +68,7 @@ export default function PredictScreen() {
       />
 
       {prediction.isFetching && !p ? (
-        <LoadingState message={`Running ${model === 'xgboost' ? 'XGBoost' : 'LSTM'} on ${symbol}… first run trains the model.`} />
+        <LoadingState message={`Running XGBoost on ${symbol}… first run trains the model.`} />
       ) : prediction.error ? (
         <ErrorState error={prediction.error} onRetry={prediction.refetch} />
       ) : p ? (
